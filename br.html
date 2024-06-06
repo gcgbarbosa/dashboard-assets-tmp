@@ -178,31 +178,31 @@
         height: 100%;
       }
       .text-with-lines {
-      position: relative;
-      display: inline-block;
-      color: #125f83; /* Adjust to match your color */
-      font-size: 24px; /* Adjust as needed */
-      font-weight: bold;
-    }
+        position: relative;
+        display: inline-block;
+        color: #125f83; /* Adjust to match your color */
+        font-size: 24px; /* Adjust as needed */
+        font-weight: bold;
+      }
 
-    .text-with-lines::before,
-    .text-with-lines::after {
-      content: '';
-      position: absolute;
-      width: 100%;
-      height: 2px; /* Adjust the height of the lines */
-      background-color: #125f83; /* Adjust to match your color */
-    }
+      .text-with-lines::before,
+      .text-with-lines::after {
+        content: "";
+        position: absolute;
+        width: 100%;
+        height: 2px; /* Adjust the height of the lines */
+        background-color: #125f83; /* Adjust to match your color */
+      }
 
-    .text-with-lines::before {
-      top: -10px; /* Adjust the distance above the text */
-      left: 0;
-    }
+      .text-with-lines::before {
+        top: -10px; /* Adjust the distance above the text */
+        left: 0;
+      }
 
-    .text-with-lines::after {
-      bottom: -10px; /* Adjust the distance below the text */
-      left: 0;
-    }
+      .text-with-lines::after {
+        bottom: -10px; /* Adjust the distance below the text */
+        left: 0;
+      }
     </style>
   </head>
   <body>
@@ -215,7 +215,7 @@
             </a>
             <div class="title">
               <a href="../index.html"
-                ></a>Tríplice Fronteira | Acompanhamento dos dados em saúde da
+                >Tríplice Fronteira | Acompanhamento dos dados em saúde da
                 região</a
               >
             </div>
@@ -226,12 +226,24 @@
       <div id="bottom" class="layout">
         <div id="left" class="layout">
           <div class="button-container">
-            <a href="#" class="button button-primary">DENGUE</a>
-            <a href="#" class="button button-secondary">SÍNDROME GRIPAL</a>
-            <a href="#" class="button button-secondary">TUBERCULOSE</a>
+            <a href="#" class="button button-primary" id="dengue" onclick="loadDengue()">DENGUE</a>
+            <a href="#" class="button button-secondary" id="sg"
+              >SÍNDROME GRIPAL</a
+            >
+            <a
+              href="#"
+              class="button button-secondary"
+              id="tb"
+              onClick="loadTb()"
+              >TUBERCULOSE</a
+            >
           </div>
         </div>
-        <div id="right" class="layout" style="flex-grow: 10; margin-right: 40px;">
+        <div
+          id="right"
+          class="layout"
+          style="flex-grow: 10; margin-right: 40px"
+        >
           <div id="content">
             <div class="top-nav">
               <div class="sub-nav">
@@ -274,11 +286,53 @@
             </div>
             <div class="content" style="flex-grow: 10">
               <!-- <iframe id="plots" src="br/index.html"></iframe> -->
-              <iframe id="plots" src="https://gcgbarbosa.github.io/dashboard-assets-tmp/dengue/br/"></iframe>
+              <iframe
+                id="plots"
+                src="https://gcgbarbosa.github.io/dashboard-assets-tmp/dengue/br/"
+              ></iframe>
             </div>
           </div>
         </div>
       </div>
     </div>
+    <script>
+      var global_outcome = "dengue"
+      async function loadDengue() {
+        setOutcome("dengue")
+        await loadExternalContent(
+          "https://gcgbarbosa.github.io/dashboard-assets-tmp/dengue/br/"
+        );
+      }
+      async function loadTb() {
+        setOutcome("tb")
+        await loadExternalContent(
+          "https://gcgbarbosa.github.io/dashboard-assets-tmp/tb/br/"
+        );
+      }
+
+      function setOutcome(outcome) {
+        global_outcome = outcome  
+        // Reset all buttons to button-secondary
+        document.getElementById("dengue").className = "button button-secondary";
+        document.getElementById("sg").className = "button button-secondary";
+        document.getElementById("tb").className = "button button-secondary";
+
+        // Set the specified outcome to button-primary
+        document.getElementById(outcome).className = "button button-primary";
+      }
+      async function loadExternalContent(address) {
+        try {
+          const response = await fetch(address);
+          const content = await response.text();
+          var iframe = document.getElementById("plots");
+          var doc = iframe.contentDocument || iframe.contentWindow.document;
+          doc.open();
+          doc.write(content);
+          doc.close();
+        } catch (error) {
+          console.error("Error loading external content:", error);
+        }
+      }
+    </script>
   </body>
 </html>
