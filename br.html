@@ -210,11 +210,11 @@
       <div id="top" class="layout">
         <div class="navbar">
           <div class="logo">
-            <a href="index.html">
-              <img src="assets/logo.png" alt="Logo" />
+            <a href="../index.html">
+              <img src="../assets/logo.png" alt="Logo" />
             </a>
             <div class="title">
-              <a href="index.html"
+              <a href="../index.html"
                 >Tríplice Fronteira | Acompanhamento dos dados em saúde da
                 região</a
               >
@@ -226,7 +226,13 @@
       <div id="bottom" class="layout">
         <div id="left" class="layout">
           <div class="button-container">
-            <a href="#" class="button button-primary" id="dengue" onclick="loadDengue()">DENGUE</a>
+            <a
+              href="#"
+              class="button button-primary"
+              id="dengue"
+              onclick="loadDengue()"
+              >DENGUE</a
+            >
             <a href="#" class="button button-secondary" id="sg"
               >SÍNDROME GRIPAL</a
             >
@@ -296,22 +302,22 @@
       </div>
     </div>
     <script>
-      var global_outcome = "dengue"
+      var global_outcome = "dengue";
       async function loadDengue() {
-        setOutcome("dengue")
+        setOutcome("dengue");
         await loadExternalContent(
           "https://gcgbarbosa.github.io/dashboard-assets-tmp/dengue/br/"
         );
       }
       async function loadTb() {
-        setOutcome("tb")
+        setOutcome("tb");
         await loadExternalContent(
           "https://gcgbarbosa.github.io/dashboard-assets-tmp/tb/br/"
         );
       }
 
       function setOutcome(outcome) {
-        global_outcome = outcome  
+        global_outcome = outcome;
         // Reset all buttons to button-secondary
         document.getElementById("dengue").className = "button button-secondary";
         document.getElementById("sg").className = "button button-secondary";
@@ -320,14 +326,23 @@
         // Set the specified outcome to button-primary
         document.getElementById(outcome).className = "button button-primary";
       }
-      async function loadExternalContent(address) {
+      async function loadExternalContent(externalUrl) {
         try {
-          const response = await fetch(address);
+          // URL of the external content
+          const response = await fetch(externalUrl);
           const content = await response.text();
-          var iframe = document.getElementById("plots");
+          var iframe = document.getElementById("myIframe");
           var doc = iframe.contentDocument || iframe.contentWindow.document;
+
+          // Set the base URL for relative paths
+          const base =
+            externalUrl.substring(0, externalUrl.lastIndexOf("/")) + "/";
+
           doc.open();
-          doc.write(content);
+          doc.write(`
+                    <base href="${base}">
+                    ${content}
+                `);
           doc.close();
         } catch (error) {
           console.error("Error loading external content:", error);
